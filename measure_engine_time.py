@@ -4,17 +4,22 @@ from engine_control import EngineControl
 from sys import stdin
 from sys import stdout
 
-stdout.write("Enter {0} to start clockwise test and {1} to start counterclockwise: "
-             .format(EngineControl.State.CLOCKWISE.value,
-                     EngineControl.State.COUNTERCLOCKWISE.value))
-desiredState = int(stdin.readline())
+while True:
+    stdout.write("Enter {0} to start clockwise test and {1} to start counterclockwise: "
+                 .format(EngineControl.State.CLOCKWISE.value,
+                         EngineControl.State.COUNTERCLOCKWISE.value))
+    choice = stdin.readline()
+    if choice == '':
+        break
 
-engineControl = get_engine_control()
-engineControl.set_state(desiredState)
-start = time.time()
-stdout.write("Hit enter to stop")
-stdin.readline()
-end = time.time()
-engineControl.set_state(EngineControl.State.OFF)
+    desiredState = int(choice)
 
-print("The elapsed time in seconds is: {0}".format(end - start))
+    engineControl = get_engine_control()
+    engineControl.set_state(desiredState)
+    start = time.time()
+    stdout.write("Hit enter to stop")
+    stdin.readline()
+    end = time.time()
+    engineControl.set_state(EngineControl.State.OFF)
+
+    print("The elapsed time in seconds is: {0}".format(end - start))
