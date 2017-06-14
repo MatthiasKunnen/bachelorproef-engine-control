@@ -1,17 +1,20 @@
-import sys
+import argparse as ap
 import time
 from default_engine_control import get_engine_control
 from engine_control import EngineControl
 
-runTime = 3
-keepOpen = 3
+parser = ap.ArgumentParser(description='Run engine clockwise. Wait. Run the '
+                                       'engine counterclockwise')
+parser.add_argument('-t', '--time', type=float, default=1,
+                    help='Time in seconds that the engine needs to run to '
+                         'travel in one direction.')
+parser.add_argument('-d', '--delay', type=float, default=3,
+                    help='Time in seconds until starting the travel in the '
+                         'opposite direction')
+args, leftovers = parser.parse_known_args()
 
-if len(sys.argv) == 2:
-    runTime = float(sys.argv[1])
-
-if len(sys.argv) == 3:
-    keepOpen = float(sys.argv[2])
-
+runTime = args.time
+keepOpen = args.delay
 engineControl = get_engine_control()
 
 
