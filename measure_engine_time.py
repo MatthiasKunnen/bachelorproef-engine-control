@@ -8,7 +8,7 @@ while True:
     stdout.write("Enter {0} to start clockwise test and {1} to start counterclockwise: "
                  .format(EngineControl.State.CLOCKWISE.value,
                          EngineControl.State.COUNTERCLOCKWISE.value))
-    choice = stdin.readline()
+    choice = stdin.readline().strip()
     if choice == '':
         break
 
