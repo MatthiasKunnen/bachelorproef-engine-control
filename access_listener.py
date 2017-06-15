@@ -65,6 +65,7 @@ def notify_callback(block, device):
 
     if not os.path.isfile(nonce_path) or not os.path.isfile(nonce_signature_path):
         print('USB device does not contain a nonce nor signature.')
+        play_sound('sound/denied.mp3')
     else:
         with open(nonce_path, 'r') as nonce_file:
             nonce_data = nonce_file.read()
