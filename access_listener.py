@@ -1,16 +1,21 @@
 import argparse as ap
 import glib
+import open_and_close
 import os
+import requests
 import time
 
 from datetime import datetime
+from default_engine_control import get_engine_control
 from detect_storage_insert import StorageMonitor
 from mount import get_block_mount_point
 from mount import mount_block
 from mount import unmount
+from play_sound import play_sound
 from pyudev import Device
 
 parser = ap.ArgumentParser(description='Access listener')
+open_and_close.extend_parser(parser)
 parser.add_argument('-v', '--verbose', help='increase output verbosity',
                     action='store_true')
 parser.add_argument('--wait-for-auto-mount', type=float,
@@ -18,6 +23,8 @@ parser.add_argument('--wait-for-auto-mount', type=float,
                          'script should wait x seconds before mounting.')
 args, leftovers = parser.parse_known_args()
 waitForAutoMount = args.wait_for_auto_mount
+
+engineControl = get_engine_control()
 
 
 def print_verbose(text, prepend_time=True):
@@ -58,7 +65,22 @@ def notify_callback(block, device):
 
     if not os.path.isfile(nonce_path) or not os.path.isfile(nonce_signature_path):
         print('USB device does not contain a nonce nor signature.')
-    # TODO: commit to server
+    else:
+        with open(nonce_path, 'r') as nonce_file:
+            nonce_data = nonce_file.read()
+        with open(nonce_signature_path, 'r') as signature_file:
+            signature_data = signature_file.read()
+
+        r = requests.post('http://access-control.dev', data={
+            "nonce": nonce_data,
+            "signature": signature_data
+        })
+
+        response = r.json()
+        if 'data' in response:
+            open_and_close.open_and_close(engineControl, args.time, args.delay)
+        else:
+            play_sound('sound/denied.mp3')
 
     if should_unmount:
         print_verbose('Unmounting {0}'.format(mount_point))
