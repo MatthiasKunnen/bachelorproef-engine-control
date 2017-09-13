@@ -32,7 +32,7 @@ order to open the door.
 Run `open_and_close.py` to open and close the door. Use the `-h` flag to show
 all available options.
 
-The main script that will activity listen for newly inserted partitions, poll
+The main script that will actively listen for newly inserted partitions, poll
 the server and interact with the user of the access control system is the
 `access_listener.py`. Use the `-h` flag to show
 all available options.
